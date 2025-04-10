@@ -4,6 +4,7 @@ import { DietComponent } from './pages/diet/diet.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { authGuard } from './core/guards/auth.guard';
+import { RoutineComponent } from './pages/routine/routine.component';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,11 @@ export const routes: Routes = [
   {
     path: 'dieta',
     component: DietComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'rutina',
+    component: RoutineComponent,
     canActivate: [authGuard],
   },
   {
