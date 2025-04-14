@@ -1,33 +1,42 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import Lottie from 'lottie-web';
-import player from 'lottie-web';
-import { AnimationOptions, LottieComponent } from 'ngx-lottie';
+import { Component, OnInit } from '@angular/core';
+import { RoutineServiceService } from '../../services/routine-service.service';
+import { DiasSemanaDto } from '../../interfaces/dias-semana-dto';
 
 @Component({
   selector: 'app-routine',
-  imports: [CommonModule, LottieComponent],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './routine.component.html',
-  styleUrl: './routine.component.css'
+  styleUrls: ['./routine.component.css'] // cuidado con `styleUrl` vs `styleUrls`
 })
-export class RoutineComponent {
-  comidasDiasSemana = ['Desayuno', 'Almuerzo', 'Cena']; // ejemplo
-  showOverlay = false;
-  showCloudImage = false;
-  showText = false;
-  showAnimation = false;
+export class RoutineComponent implements OnInit {
+  diasSemana: DiasSemanaDto[] = [];
+  cargando: boolean = false;
+  error: string | null = null;
 
-  lottieOptions: AnimationOptions = {
-    path: '/assets/animations/animation1715270027160.json',
-    autoplay: true,
-    loop: true,
-  };
+  constructor(private routineService: RoutineServiceService) {}
 
-  generarRutina() {
-    // Aquí va tu lógica
-    this.showOverlay = true;
-    this.showText = true;
-    this.showCloudImage = true;
-    this.showAnimation = true;
+  ngOnInit() {
+    this.obtenerDiasSemana();
+  }
+
+  obtenerDiasSemana() {
+    this.cargando = true;
+    this.error = null;
+
+    this.routineService.getDiasSemana().subscribe({
+      next: (data) => {
+        this.diasSemana = data;
+        console.log('Días de la semana recibidos:', data);
+      },
+      error: (err) => {
+        this.error = 'Error al obtener los días de la semana.';
+        console.error('Detalles del error:', err);
+      },
+      complete: () => {
+        this.cargando = false;
+      }
+    });
   }
 }

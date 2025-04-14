@@ -1,25 +1,22 @@
-<div class="rutina-container">
-    <div class="overlay" *ngIf="showOverlay"></div>
-  
-    <ul class="comidas-lista">
-      <li *ngFor="let comida of comidasDiasSemana">{{ comida }}</li>
-    </ul>
-  
-    <button class="generador-btn" (click)="generarRutina()">Generar Rutina</button>
-  
-    <div class="cloud-image" *ngIf="showCloudImage"></div>
-  
-    <div class="text-dialog" *ngIf="showText">
-      Aquí podrás personalizar tus ejercicios de cada día
-    </div>
-  
-    <ng-lottie *ngIf="showAnimation"
-           [options]="lottieOptions">
-    </ng-lottie>
+<div *ngIf="diasSemana && diasSemana.length > 0; else sinDias">
+  <div *ngFor="let dia of diasSemana" class="dia-card">
+    <h3>{{ dia.titulo }}</h3>
+    <img [src]="'/assets/images/' + dia.pic" alt="{{ dia.titulo }}" width="150" />
 
-  
-    <footer class="coordinator-layout">
-      <!-- Aquí podrías poner botones o navegación inferior -->
-    </footer>
+    <div *ngIf="dia.comidas && dia.comidas.length > 0">
+      <h4>Comidas:</h4>
+      <ul>
+        <li *ngFor="let comida of dia.comidas">
+          <strong>{{ comida.titulo }}</strong> - 
+          {{ comida.kcal }} kcal, 
+          {{ comida.proteinas }}g proteína, 
+          {{ comida.carbohidratos }}g carbs
+        </li>
+      </ul>
+    </div>
   </div>
-  
+</div>
+
+<ng-template #sinDias>
+  <p>No hay días cargados aún.</p>
+</ng-template>
