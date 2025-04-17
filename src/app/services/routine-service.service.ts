@@ -1,3 +1,4 @@
+// src/app/services/routine-service.service.ts
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
@@ -19,20 +20,17 @@ export class RoutineServiceService {
     return localStorage.getItem('token');
   }
 
-  getDiasSemana(): Observable<DiasSemanaDto[]> {
+  getDiasSemanaPorUsuario(usuarioId: number): Observable<DiasSemanaDto[]> {
     const token = this.getToken();
 
-    if (!token) {
-      console.warn('Token no encontrado en localStorage');
-    }
+    const headers = token
+      ? new HttpHeaders().set('Authorization', `Bearer ${token}`)
+      : new HttpHeaders();
 
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
+    const url = `${this.apiUrl}/DiasSemana/GetDiasSemanaByUser/${usuarioId}`;
+    console.log('➡️ GET:', url);
+    console.log('➡️ Headers:', headers.get('Authorization'));
 
-    console.log('Realizando GET a:', `${this.apiUrl}/GetAllDiasSemana`);
-    console.log('Headers:', headers);
-
-    return this.http.get<DiasSemanaDto[]>(`${this.apiUrl}/DiasSemana/GetAllDiasSemana`, { headers });
+    return this.http.get<DiasSemanaDto[]>(url, { headers });
   }
 }

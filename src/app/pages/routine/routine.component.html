@@ -1,19 +1,6 @@
 <div *ngIf="diasSemana && diasSemana.length > 0; else sinDias">
-  <div *ngFor="let dia of diasSemana" class="dia-card">
-    <h3>{{ dia.titulo }}</h3>
-    <img [src]="'/assets/images/' + dia.pic" alt="{{ dia.titulo }}" width="150" />
-
-    <div *ngIf="dia.comidas && dia.comidas.length > 0">
-      <h4>Comidas:</h4>
-      <ul>
-        <li *ngFor="let comida of dia.comidas">
-          <strong>{{ comida.titulo }}</strong> - 
-          {{ comida.kcal }} kcal, 
-          {{ comida.proteinas }}g proteína, 
-          {{ comida.carbohidratos }}g carbs
-        </li>
-      </ul>
-    </div>
+  <div *ngFor="let dia of diasSemana">
+    <app-card-dias-semana-component [dia]="dia"></app-card-dias-semana-component>
   </div>
 </div>
 

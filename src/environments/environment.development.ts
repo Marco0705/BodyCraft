@@ -4,8 +4,13 @@ export const environment = {
   apiKey: '',
 };
 
+
 //joseluis@gmail.com
 //joseluis
 
 //test@gmail.com 
+//test
+
+//Para docker
+//testuser@gmail.com
 //test
