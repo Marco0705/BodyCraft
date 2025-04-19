@@ -1,2 +1,25 @@
-<p>routine works!jsdklfjaklsfjasdkldfjkljdasfkljasñkldfjakldfj</p>
-<p>jeejaslfkjasldf</p>
+<div class="rutina-container">
+    <div class="overlay" *ngIf="showOverlay"></div>
+  
+    <ul class="comidas-lista">
+      <li *ngFor="let comida of comidasDiasSemana">{{ comida }}</li>
+    </ul>
+  
+    <button class="generador-btn" (click)="generarRutina()">Generar Rutina</button>
+  
+    <div class="cloud-image" *ngIf="showCloudImage"></div>
+  
+    <div class="text-dialog" *ngIf="showText">
+      Aquí podrás personalizar tus ejercicios de cada día
+    </div>
+  
+    <ng-lottie *ngIf="showAnimation"
+           [options]="lottieOptions">
+    </ng-lottie>
+
+  
+    <footer class="coordinator-layout">
+      <!-- Aquí podrías poner botones o navegación inferior -->
+    </footer>
+  </div>
+  
