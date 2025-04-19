@@ -49,6 +49,11 @@ export class AuthServiceService {
     return !!this.getToken() && !this.isTokenExpired();
   }
 
+  register(): Observable<UserDto> {
+    const url = `${environment.apiUrl}/signup`;
+    return this.http.post<UserDto>(url, {});
+  }
+
   // Nueva función para obtener el usuario por su email
   getUsuarioByEmail(email: string): Observable<UserDto> {
     const url = `${environment.apiUrl}/userByEmail/${email}`;

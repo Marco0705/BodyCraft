@@ -14,7 +14,6 @@ import { AuthServiceService } from '../../services/login/auth-service.service';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
@@ -35,7 +34,7 @@ export class LoginComponent implements OnInit {
     this.loginForm.set(
       this.fb.group({
         email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(3)]],
+        password: ['', [Validators.required, Validators.minLength(6)]],
       })
     );
   }
