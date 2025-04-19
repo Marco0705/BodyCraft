@@ -1,17 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RoutineServiceService } from '../../services/routine-service.service';
+
 import { DiasSemanaDto } from '../../interfaces/dias-semana-dto';
 import { CardDiasSemanaComponentComponent } from '../../components/card-dias-semana-component/card-dias-semana-component.component';
-import { AuthServiceService } from '../../services/auth-service.service';
+import { AuthServiceService } from '../../services/login/auth-service.service';
 import { UserDto } from '../../interfaces/user-dto';
+import { RoutineServiceService } from '../../services/routine/routine-service.service';
 
 @Component({
   selector: 'app-routine',
   standalone: true,
   imports: [CommonModule, CardDiasSemanaComponentComponent],
   templateUrl: './routine.component.html',
-  styleUrls: ['./routine.component.css']
+  styleUrls: ['./routine.component.css'],
 })
 export class RoutineComponent implements OnInit {
   diasSemana: DiasSemanaDto[] = [];
@@ -46,7 +47,7 @@ export class RoutineComponent implements OnInit {
         error: (err) => {
           this.error = 'Error al obtener el usuario por email.';
           console.error('❌ Error getUsuarioByEmail:', err);
-        }
+        },
       });
     } else {
       this.error = 'No se pudo obtener el email del usuario.';
@@ -70,7 +71,7 @@ export class RoutineComponent implements OnInit {
       },
       complete: () => {
         this.cargando = false;
-      }
+      },
     });
   }
 }

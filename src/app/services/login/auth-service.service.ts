@@ -1,11 +1,11 @@
 // src/app/services/auth-service.service.ts
 import { inject, Injectable } from '@angular/core';
-import { LoginUserDTO } from '../interfaces/login-user-dto';
+import { LoginUserDTO } from '../../interfaces/login-user-dto';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../../environments/environment.development';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { UserDto } from '../interfaces/user-dto';
+import { UserDto } from '../../interfaces/user-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -41,8 +41,8 @@ export class AuthServiceService {
 
   logout() {
     localStorage.removeItem('token');
-    localStorage.removeItem('email');   
-    this.router.navigate(['/login']);
+    localStorage.removeItem('email');
+    this.router.navigate(['/home']);
   }
 
   isAuthenticated(): boolean {
@@ -55,11 +55,10 @@ export class AuthServiceService {
     return this.http.get<UserDto>(url);
   }
 
-
   isTokenExpired(): boolean {
     const token = this.getToken();
     if (!token) return true;
-  
+
     const payload = token.split('.')[1];
     try {
       const decoded = JSON.parse(atob(payload));
@@ -69,6 +68,4 @@ export class AuthServiceService {
       return true;
     }
   }
-  
- 
 }

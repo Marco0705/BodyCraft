@@ -10,7 +10,7 @@ import {
 import { Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthServiceService } from '../../services/auth-service.service';
+import { AuthServiceService } from '../../services/login/auth-service.service';
 
 @Component({
   selector: 'app-login',

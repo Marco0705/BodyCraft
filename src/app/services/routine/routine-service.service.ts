@@ -2,9 +2,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { environment } from '../../environments/environment.development';
 import { Observable } from 'rxjs';
-import { DiasSemanaDto } from '../interfaces/dias-semana-dto';
+import { environment } from '../../../environments/environment.development';
+import { DiasSemanaDto } from '../../interfaces/dias-semana-dto';
+
 
 @Injectable({
   providedIn: 'root'
