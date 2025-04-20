@@ -4,8 +4,9 @@ import { LoginUserDTO } from '../../interfaces/login-user-dto';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { UserDto } from '../../interfaces/user-dto';
+import { Register } from '../../interfaces/register/register';
 
 @Injectable({
   providedIn: 'root',
@@ -18,9 +19,26 @@ export class AuthServiceService {
   constructor() {}
 
   login(user: LoginUserDTO): Observable<string> {
-    return this.http.post(this.apiUrl + '/login', user, {
-      responseType: 'text',
-    });
+    return this.http
+      .post(this.apiUrl + '/login', user, { responseType: 'text' })
+      .pipe(
+        tap((token) => {
+          this.saveToken(token);
+          // Suponiendo que la respuesta de login contiene el usuario, obtenemos y guardamos solo el nombre
+          this.getUsuarioByEmail(user.email).subscribe((userInfo) => {
+            this.saveUserName(userInfo.name);
+            this.saveEmail(userInfo.email); 
+          });
+        })
+      );
+  }
+
+  saveUserName(userName: string) {
+    localStorage.setItem('user_name', userName); // Guardamos solo el nombre
+  }
+
+  getUserName(): string | null {
+    return localStorage.getItem('user_name');
   }
 
   saveToken(token: string) {
@@ -41,6 +59,7 @@ export class AuthServiceService {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('user_name');
     localStorage.removeItem('email');
     this.router.navigate(['/home']);
   }
@@ -49,14 +68,20 @@ export class AuthServiceService {
     return !!this.getToken() && !this.isTokenExpired();
   }
 
-  register(): Observable<UserDto> {
-    const url = `${environment.apiUrl}/signup`;
-    return this.http.post<UserDto>(url, {});
+  register(user: Register): Observable<Register> {
+    const url = `${this.apiUrl}/signup`; // esto ya concatena con "/auth"
+    return this.http.post<Register>(url, user);
   }
 
   // Nueva función para obtener el usuario por su email
-  getUsuarioByEmail(email: string): Observable<UserDto> {
+  /*   getUsuarioByEmail(email: string): Observable<UserDto> {
     const url = `${environment.apiUrl}/userByEmail/${email}`;
+    return this.http.get<UserDto>(url);
+  } */
+
+  getUsuarioByEmail(email: string): Observable<UserDto> {
+    const encodedEmail = encodeURIComponent(email); // Codificar el email
+    const url = `${environment.apiUrl}/auth/userByEmail/${encodedEmail}`;
     return this.http.get<UserDto>(url);
   }
 
