@@ -19,6 +19,7 @@
     "@angular/platform-browser-dynamic": "^19.1.0",
     "@angular/router": "^19.1.0",
     "@tailwindcss/postcss": "^4.0.15",
+    "body-craft-front": "file:",
     "flowbite": "^3.1.2",
     "lottie-web": "^5.12.2",
     "ngx-lottie": "^13.0.1",

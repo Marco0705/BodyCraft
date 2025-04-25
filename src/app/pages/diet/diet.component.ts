@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component} from '@angular/core';
+
 
 @Component({
   selector: 'app-diet',
@@ -7,5 +8,5 @@ import { Component } from '@angular/core';
   styleUrl: './diet.component.css'
 })
 export class DietComponent {
-
+ 
 }

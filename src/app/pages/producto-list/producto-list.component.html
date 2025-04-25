@@ -1,0 +1,180 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-gray-800">Lista de Productos</h2>
+    <a 
+      routerLink="/productos/nuevo" 
+      class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+      Agregar Producto
+    </a>
+  </div>
+
+  <!-- Mensajes de éxito o error -->
+  @if (successMessage()) {
+    <div class="p-4 mb-6 text-sm text-green-800 rounded-lg bg-green-50" role="alert">
+      {{ successMessage() }}
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="p-4 mb-6 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- Búsqueda y Filtrado -->
+  <div class="mb-6 p-4 bg-white rounded-lg shadow">
+    <div class="flex flex-col md:flex-row gap-3">
+      <div class="w-full md:w-1/4">
+        <label for="searchType" class="block mb-2 text-sm font-medium text-gray-700">Buscar por:</label>
+        <select 
+          id="searchType" 
+          [(ngModel)]="searchType" 
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+          <option value="titulo">Título</option>
+          <option value="marca">Marca</option>
+          <option value="tipoComida">Tipo de Comida</option>
+        </select>
+      </div>
+      <div class="w-full md:w-2/4">
+        <label for="searchTerm" class="block mb-2 text-sm font-medium text-gray-700">Término de búsqueda:</label>
+        <input 
+          type="text" 
+          id="searchTerm" 
+          [(ngModel)]="searchTerm" 
+          placeholder="Buscar..." 
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+      </div>
+      <div class="w-full md:w-1/4 flex items-end">
+        <button 
+          (click)="onSearch()" 
+          class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+          Buscar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Productos -->
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    @if (isLoading()) {
+      <div class="flex justify-center items-center h-40">
+        <div role="status">
+          <svg aria-hidden="true" class="w-10 h-10 text-gray-200 animate-spin fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+          </svg>
+          <span class="sr-only">Cargando...</span>
+        </div>
+      </div>
+    } @else if (productos().length === 0) {
+      <div class="bg-white p-8 text-center">
+        <p class="text-gray-500">No se encontraron productos.</p>
+      </div>
+    } @else {
+      <table class="w-full text-sm text-left text-gray-700 bg-white">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+          <tr>
+            <th scope="col" class="px-6 py-3">ID</th>
+            <th scope="col" class="px-6 py-3">Título</th>
+            <th scope="col" class="px-6 py-3">Tipo</th>
+            <th scope="col" class="px-6 py-3">Marca</th>
+            <th scope="col" class="px-6 py-3">Gramos</th>
+            <th scope="col" class="px-6 py-3">Kcal</th>
+            <th scope="col" class="px-6 py-3">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of productos(); track p.id) {
+            <tr class="border-b hover:bg-gray-50">
+              <td class="px-6 py-4">{{ p.id }}</td>
+              <td class="px-6 py-4 font-medium text-gray-900">{{ p.titulo }}</td>
+              <td class="px-6 py-4">{{ p.tipoComida }}</td>
+              <td class="px-6 py-4">{{ p.marca }}</td>
+              <td class="px-6 py-4">{{ p.cantGramos }}</td>
+              <td class="px-6 py-4">{{ p.kcal }}</td>
+              <td class="px-6 py-4 flex gap-2">
+                <a 
+                  [routerLink]="['/productos', p.id]" 
+                  class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center">
+                  Ver
+                </a>
+                <a 
+                  [routerLink]="['/productos/editar', p.id]" 
+                  class="text-white bg-yellow-600 hover:bg-yellow-700 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-3 py-2 text-center">
+                  Editar
+                </a>
+                <button
+                  type="button"
+                  [disabled]="isDeleting()"
+                  (click)="eliminar(p.id!)"
+                  class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center"
+                  [ngClass]="{'opacity-70 cursor-not-allowed': isDeleting()}"
+                >
+                  @if (isDeleting()) {
+                    <span class="inline-flex items-center">
+                      <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Eliminando...
+                    </span>
+                  } @else {
+                    Eliminar
+                  }
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+
+  <!-- Paginación -->
+  @if (totalPages() > 1) {
+    <div class="flex items-center justify-between mt-6">
+      <div>
+        <p class="text-sm text-gray-700">
+          Mostrando <span class="font-medium">{{ (currentPage() * pageSize()) + 1 }}</span> a 
+          <span class="font-medium">{{ calculateMinValue }}</span> de 
+          <span class="font-medium">{{ totalItems() }}</span> resultados
+        </p>
+      </div>
+      <nav aria-label="Page navigation">
+        <ul class="inline-flex -space-x-px">
+          <li>
+            <button 
+              [disabled]="currentPage() === 0"
+              (click)="changePage(currentPage() - 1)"
+              class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700"
+              [class.opacity-50]="currentPage() === 0"
+              [class.cursor-not-allowed]="currentPage() === 0">
+              Anterior
+            </button>
+          </li>
+          @for (page of pages(); track page) {
+            <li>
+              <button 
+                (click)="changePage(page)"
+                [class]="page === currentPage() 
+                  ? 'px-3 py-2 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700' 
+                  : 'px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700'">
+                {{ page + 1 }}
+              </button>
+            </li>
+          }
+          <li>
+            <button 
+              [disabled]="currentPage() === totalPages() - 1"
+              (click)="changePage(currentPage() + 1)"
+              class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700"
+              [class.opacity-50]="currentPage() === totalPages() - 1"
+              [class.cursor-not-allowed]="currentPage() === totalPages() - 1">
+              Siguiente
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  }
+</div>
