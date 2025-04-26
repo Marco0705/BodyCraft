@@ -1,8 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
 import { AuthServiceService } from '../../services/login/auth-service.service';
-
-
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-nav-bar',
@@ -10,17 +9,26 @@ import { AuthServiceService } from '../../services/login/auth-service.service';
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.css',
 })
-export class NavBarComponent {
+export class NavBarComponent implements OnInit, OnDestroy {
   protected userName: string | null = null;
   protected email: string | null = null;
 
   private authService = inject(AuthServiceService);
+  private subscription: Subscription = new Subscription();
 
   ngOnInit(): void {
-    this.getUserName();
+    // Cargar datos iniciales
+    this.updateUserInfo();
+
+    // Suscribirse a cambios en el estado de autenticación
+    this.subscription.add(
+      this.authService.authStatus$.subscribe(() => {
+        this.updateUserInfo();
+      })
+    );
   }
 
-  protected getUserName() {
+  protected updateUserInfo(): void {
     if (this.authService.isAuthenticated()) {
       // Si está autenticado, obtenemos el nombre y el email
       this.userName = this.authService.getUserName();
@@ -34,5 +42,9 @@ export class NavBarComponent {
 
   protected logout() {
     this.authService.logout();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

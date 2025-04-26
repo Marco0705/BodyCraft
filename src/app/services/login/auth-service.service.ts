@@ -4,7 +4,7 @@ import { LoginUserDTO } from '../../interfaces/login-user-dto';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { UserDto } from '../../interfaces/user-dto';
 import { Register } from '../../interfaces/register/register';
 
@@ -15,6 +15,12 @@ export class AuthServiceService {
   private apiUrl = `${environment.apiUrl}/auth`;
   private http: HttpClient = inject(HttpClient);
   private router: Router = inject(Router);
+
+  // BehaviorSubject para el estado de autenticación
+  private authStatusChanged = new BehaviorSubject<boolean>(
+    this.isAuthenticated()
+  );
+  public authStatus$ = this.authStatusChanged.asObservable();
 
   constructor() {}
 
@@ -27,7 +33,9 @@ export class AuthServiceService {
           // Suponiendo que la respuesta de login contiene el usuario, obtenemos y guardamos solo el nombre
           this.getUsuarioByEmail(user.email).subscribe((userInfo) => {
             this.saveUserName(userInfo.name);
-            this.saveEmail(userInfo.email); 
+            this.saveEmail(userInfo.email);
+            // Notificar cambio en estado de autenticación
+            this.authStatusChanged.next(true);
           });
         })
       );
@@ -61,6 +69,8 @@ export class AuthServiceService {
     localStorage.removeItem('token');
     localStorage.removeItem('user_name');
     localStorage.removeItem('email');
+    // Notificar cambio en estado de autenticación
+    this.authStatusChanged.next(false);
     this.router.navigate(['/home']);
   }
 
@@ -70,14 +80,13 @@ export class AuthServiceService {
 
   register(user: Register): Observable<Register> {
     const url = `${this.apiUrl}/signup`; // esto ya concatena con "/auth"
-    return this.http.post<Register>(url, user);
+    return this.http.post<Register>(url, user).pipe(
+      tap(() => {
+        // Solo notificar que se ha registrado (opcional, depende de si quieres login automático)
+        // Si quieres login automático después del registro, deberás agregar esa lógica aquí
+      })
+    );
   }
-
-  // Nueva función para obtener el usuario por su email
-  /*   getUsuarioByEmail(email: string): Observable<UserDto> {
-    const url = `${environment.apiUrl}/userByEmail/${email}`;
-    return this.http.get<UserDto>(url);
-  } */
 
   getUsuarioByEmail(email: string): Observable<UserDto> {
     const encodedEmail = encodeURIComponent(email); // Codificar el email
