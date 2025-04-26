@@ -6,6 +6,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { RoutineComponent } from './pages/routine/routine.component';
 import { authGuard } from '../core/guards/auth.guard';
 import { RegisterComponent } from './pages/register/register.component';
+import { ProductoListComponent } from './pages/producto-list/producto-list.component';
+import { ProductFormComponent } from './shared/components/product-form/product-form.component';
 
 export const routes: Routes = [
   {
@@ -31,6 +33,18 @@ export const routes: Routes = [
     path: 'dieta',
     component: DietComponent,
     canActivate: [authGuard],
+  },
+  {
+    path: 'productos',
+    component: ProductoListComponent,
+  },
+  {
+    path: 'productos/nuevo',
+    component: ProductFormComponent,
+  },
+  {
+    path: 'productos/editar/:id',
+    component: ProductFormComponent,
   },
   {
     path: 'rutina',
