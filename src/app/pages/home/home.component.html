@@ -1,60 +1,102 @@
 <!-- src/app/pages/home/home.component.html -->
 <div class="bg-gray-100 dark:bg-gray-900 min-h-screen">
   <!-- Hero Section -->
-  <section class="relative bg-cover bg-center py-32" style="background-image: url('assets/images/hero-bg.webp');">
-    <div class="absolute inset-0 bg-black opacity-50"></div>
-    <div class="container mx-auto px-4 relative z-10 text-center">
-      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Bienvenido a BodyCraft</h1>
-      <p class="text-xl text-white mb-8">Tu camino hacia un estilo de vida más saludable y en forma</p>
-      
-      @if (isAuthenticated) {
-        <div class="mb-8">
-          <h2 class="text-2xl text-white">¡Hola, {{ userName }}!</h2>
-          <p class="text-white">Continúa con tu entrenamiento hoy</p>
-        </div>
+  <!-- Hero Section con botón adicional para IMC -->
+<section class="relative bg-cover bg-center py-32" style="background-image: url('assets/images/hero-bg.webp');">
+  <div class="absolute inset-0 bg-black opacity-50"></div>
+  <div class="container mx-auto px-4 relative z-10 text-center">
+    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Bienvenido a BodyCraft</h1>
+    <p class="text-xl text-white mb-8">Tu camino hacia un estilo de vida más saludable y en forma</p>
+    
+    @if (isAuthenticated) {
+      <div class="mb-8">
+        <h2 class="text-2xl text-white">¡Hola, {{ userName }}!</h2>
+        <p class="text-white">Continúa con tu entrenamiento hoy</p>
+      </div>
+      <div class="flex flex-col md:flex-row gap-4 justify-center">
         <a [routerLink]="['/rutina']" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300">
           Ver mi rutina
         </a>
-      } @else {
-        <div class="flex flex-col md:flex-row gap-4 justify-center">
-          <a [routerLink]="['/login']" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300">
-            Iniciar Sesión
-          </a>
-          <a [routerLink]="['/register']" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300">
-            Registrarse
-          </a>
+        <a (click)="scrollToIMC()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300 cursor-pointer">
+          Calcular IMC
+        </a>
+      </div>
+    } @else {
+      <div class="flex flex-col md:flex-row gap-4 justify-center">
+        <a [routerLink]="['/login']" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300">
+          Iniciar Sesión
+        </a>
+        <a [routerLink]="['/register']" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300">
+          Registrarse
+        </a>
+      </div>
+    }
+  </div>
+</section>
+ <!-- Sección IMC -->
+<section id="imc-section" class="py-16 bg-white dark:bg-gray-800">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold mb-8 text-center text-gray-800 dark:text-white">Calcula tu Índice de Masa Corporal</h2>
+    
+    <div class="max-w-lg mx-auto bg-gray-50 dark:bg-gray-700 rounded-lg shadow-lg p-8">
+      <p class="text-gray-600 dark:text-gray-300 mb-6">Conoce tu IMC para entender mejor tus necesidades de entrenamiento y nutrición.</p>
+      
+      <form (ngSubmit)="calcularIMC()" class="space-y-4">
+        <div>
+          <label for="peso" class="block text-gray-700 dark:text-gray-200 font-medium mb-2">Peso (kg)</label>
+          <input 
+            type="number" 
+            id="peso" 
+            name="peso" 
+            [(ngModel)]="peso" 
+            required
+            min="30" 
+            max="300" 
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+            placeholder="Ejemplo: 70">
+        </div>
+        
+        <div>
+          <label for="altura" class="block text-gray-700 dark:text-gray-200 font-medium mb-2">Altura (m)</label>
+          <input 
+            type="number" 
+            id="altura" 
+            name="altura" 
+            [(ngModel)]="altura" 
+            required
+            min="1" 
+            max="2.5" 
+            step="0.01" 
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+            placeholder="Ejemplo: 1.75">
+        </div>
+        
+        <button 
+          type="submit" 
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition duration-300 flex justify-center items-center"
+          [disabled]="loading">
+          <span *ngIf="loading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+          Calcular IMC
+        </button>
+      </form>
+      
+      @if (resultado) {
+        <div class="mt-8 p-4 rounded-lg" [ngClass]="resultadoClass">
+          <h3 class="text-xl font-bold mb-2">Tu IMC: {{ resultado.imc.toFixed(2) }}</h3>
+          <p class="font-medium">Categoría: {{ resultado.categoria }}</p>
+          <p class="mt-2">{{ resultado.descripcion }}</p>
         </div>
       }
-    </div>
-  </section>
-
-  <!-- Featured Workouts -->
-  <section class="py-16 bg-white dark:bg-gray-800">
-    <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold mb-12 text-center text-gray-800 dark:text-white">Entrenamientos Destacados</h2>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        @for (workout of featuredWorkouts; track workout.id) {
-          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden shadow-lg transition duration-300 hover:shadow-xl">
-            <div class="h-48 bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
-              <img src="{{ workout.image }}" alt="{{ workout.title }}" class="h-full w-full object-cover" 
-                   onerror="this.src='/api/placeholder/400/300'; this.onerror=null;">
-            </div>
-            <div class="p-6">
-              <div class="flex justify-between items-center mb-2">
-                <h3 class="text-xl font-bold text-gray-800 dark:text-white">{{ workout.title }}</h3>
-                <span class="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded-full text-xs">{{ workout.level }}</span>
-              </div>
-              <p class="text-gray-600 dark:text-gray-300 mb-4">{{ workout.description }}</p>
-              <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition duration-300">
-                Ver detalles
-              </button>
-            </div>
-          </div>
-        }
-      </div>
+      @if (error) {
+        <div class="mt-6 p-4 bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200 rounded-lg">
+          <p>{{ error }}</p>
+        </div>
+      }
+    
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- Nutrition Tips -->
   <section class="py-16 bg-gray-100 dark:bg-gray-900">
