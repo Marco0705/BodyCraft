@@ -1,0 +1,13 @@
+.my-hover-class {
+    transition: transform 0.3s ease-in-out;
+    z-index: 10;
+    border-radius: 1rem;
+  }
+  
+  .my-hover-class:hover {
+    transform: scale(1.15);
+    z-index: 20;
+    outline: rgb(249, 249, 249) solid 3px;
+    outline-offset: 3px;
+  }
+  

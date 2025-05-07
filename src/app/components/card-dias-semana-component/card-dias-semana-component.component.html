@@ -1,5 +1,28 @@
-<div class="dia-card">
-    <h3>{{ dia.titulo }}</h3>
-    <img [src]="getImagenPorDia()" [alt]="dia.titulo" width="150" />
+<!-- card-dias-semana.component.html -->
+<div class="flex my-margin-card">
+  <button (click)="emitSlideLeft()" class="absolute left-0 top-1/2 transform -translate-y-1/2 
+  text-white px-2 pt-8 rounded-md my-margin-button" style="z-index: 99; top:calc(10%)">
+    <i class="fa-solid fa-chevron-left text-white text-[135]"></i>
+
+  </button>
+  <div [id]="'slider' + num" class="flex overflow-x-hidden scroll gap-6 scrollbar-none 
+  pt-5 px-3 pb-10 absolute scrollbar-hide scroll-smooth lg:pl-20 pl-10 z-50" >
+  @for (item of myItems; track $index) {
+    <img src="{{ item.path}}" alt ="" class="w-[350px] md:w-[500px] 
+    rounded-md cursor-pointer hover:scale-105 transition-all duration-150 ease-in my-hover-class">
+   }
+
+  
+    <button (click)="emitSlideRight()" class="absolute right-0 top-1/2 
+    transform -translate-y-1/2 text-white px-2 pt-8 rounded-md my-margin-button"
+    style="z-index: 99; top:calc(10%)">
+    <i class="fa-solid fa-chevron-right text-white text-[135]"></i>
+    </button>
+  
+    <ng-template #sinDias>
+      <p>No hay días cargados aún.</p>
+    </ng-template>
+    
   </div>
   
+ </div>

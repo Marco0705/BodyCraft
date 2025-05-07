@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, input, Input, Output, output } from '@angular/core';
 import { DiasSemanaDto } from '../../interfaces/dias-semana-dto';
 import { CommonModule } from '@angular/common';
 
@@ -8,27 +8,35 @@ import { CommonModule } from '@angular/common';
   templateUrl: './card-dias-semana-component.component.html',
   styleUrl: './card-dias-semana-component.component.css'
 })
+
 export class CardDiasSemanaComponentComponent {
   @Input() dia!: DiasSemanaDto;
+  @Input() num!: number;
+  @Output() slideLeft = new EventEmitter<string>();
+  @Output() slideRight = new EventEmitter<string>();
 
-  getImagenPorDia(): string {
-    switch (this.dia.titulo.toLowerCase()) {
-      case 'lunes':
-        return '/assets/images/lunes.jpg';
-      case 'martes':
-        return '/assets/images/martes.jpg';
-      case 'miércoles':
-        return '/assets/images/miercoles.jpg';
-      case 'jueves':
-        return '/assets/images/jueves.jpg';
-      case 'viernes':
-        return '/assets/images/viernes.jpg';
-      case 'sábado':
-        return '/assets/images/sabado.jpg';
-      case 'domingo':
-        return '/assets/images/domingo.jpg';
-      default:
-        return '/assets/images/default.jpg';
-    }
+  // Método para emitir el evento de mover a la izquierda
+  emitSlideLeft() {
+    this.slideLeft.emit(`slider${this.num}`);
   }
+
+  // Método para emitir el evento de mover a la derecha
+  emitSlideRight() {
+    this.slideRight.emit(`slider${this.num}`);
+  }
+
+  // Lista de imágenes (como ejemplo de imágenes relacionadas con los días de la semana)
+  myItems: any[] = [
+    { path: 'images/lunes_00000.jpg' },
+    { path: 'images/lunes.webp' },
+    { path: 'images/mieroles.jpg' },
+    { path: 'images/jueves.jpg' },
+    { path: 'images/brazosgrandes.jpg' },
+    { path: 'images/espalda.jpg' },
+    { path: 'images/espaldaanacha.jpg' },
+    { path: 'images/pectorales.jpg' },
+    { path: 'images/young-woman-doing-exercise-on-260nw-2317686063.webp' },
+  ];
+  
+
 }

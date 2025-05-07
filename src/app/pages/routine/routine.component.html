@@ -1,9 +1,4 @@
-<div *ngIf="diasSemana && diasSemana.length > 0; else sinDias">
-  <div *ngFor="let dia of diasSemana">
-    <app-card-dias-semana-component [dia]="dia"></app-card-dias-semana-component>
-  </div>
+<div class="relative md:pb-200 pb-24 flex h-[80vh] items-center">
+  <app-card-dias-semana-component [num]="1" (slideLeft)="slideLeft($event)" 
+  (slideRight)="slideRight($event)"/>
 </div>
-
-<ng-template #sinDias>
-  <p>No hay días cargados aún.</p>
-</ng-template>

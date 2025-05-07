@@ -25,21 +25,28 @@ export class AuthServiceService {
   constructor() {}
 
   login(user: LoginUserDTO): Observable<string> {
+    const credentials = btoa(`${user.email}:${user.password}`);
+    const headers = {
+      Authorization: `Basic ${credentials}`,
+    };
+  
     return this.http
-      .post(this.apiUrl + '/login', user, { responseType: 'text' })
+      .get(this.apiUrl + '/login', {
+        headers,
+        responseType: 'text',
+      })
       .pipe(
-        tap((token) => {
-          this.saveToken(token);
-          // Suponiendo que la respuesta de login contiene el usuario, obtenemos y guardamos solo el nombre
+        tap((response) => {
+          this.saveToken(credentials); // OJO: no es un token JWT, sino las credenciales en base64
           this.getUsuarioByEmail(user.email).subscribe((userInfo) => {
             this.saveUserName(userInfo.name);
             this.saveEmail(userInfo.email);
-            // Notificar cambio en estado de autenticación
             this.authStatusChanged.next(true);
           });
         })
       );
   }
+  
 
   saveUserName(userName: string) {
     localStorage.setItem('user_name', userName); // Guardamos solo el nombre

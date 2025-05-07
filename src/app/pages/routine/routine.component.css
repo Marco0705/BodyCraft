@@ -1,34 +1,26 @@
-.rutina-container {
+/* Estilo para el contenedor principal de la card */
+.card-container {
+  height: 100%;              /* Que ocupe todo el espacio disponible */
+  max-height: none;          /* Elimina límites innecesarios */
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+  align-items: center;
   justify-content: center;
+  padding: 2rem;
+  overflow: visible;         /* Permite que las imágenes sobresalgan al hacer hover */
 }
 
-.comida-card {
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  padding: 16px;
-  width: 300px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  background-color: #fff;
+/* Ajusta el tamaño de la imagen dentro de la card */
+.card-container img {
+  width: 450px;              /* Puedes ajustar a lo que prefieras */
+  max-width: 90vw;           /* Para que sea responsive */
+  border-radius: 1rem;
+  transition: transform 0.3s ease-in-out;
 }
 
-.comida-img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 12px;
-}
-
-.info-nutricional p {
-  margin: 4px 0;
-}
-
-.error {
-  color: red;
-  font-weight: bold;
-  text-align: center;
-  margin: 16px 0;
+/* Efecto hover más marcado */
+.card-container img:hover {
+  transform: scale(1.15);
+  z-index: 20;
+  outline: rgb(249, 249, 249) solid 3px;
+  outline-offset: 3px;
 }
