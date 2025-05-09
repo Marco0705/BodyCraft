@@ -1,0 +1,75 @@
+<div class="bg-gray-100 dark:bg-gray-900 min-h-screen py-10">
+  <div class="container mx-auto px-4">
+    <h1 class="text-3xl font-bold text-center text-gray-800 dark:text-white mb-8">Crear Nueva Comida</h1>
+
+    <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Título -->
+        <div>
+          <label class="block text-gray-700 dark:text-gray-200 mb-2">Título</label>
+          <input formControlName="titulo" type="text"
+            class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600" />
+        </div>
+
+        <!-- URL Imagen -->
+        <div>
+          <label class="block text-gray-700 dark:text-gray-200 mb-2">URL Imagen</label>
+          <input formControlName="pic" type="text"
+            class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600" />
+        </div>
+
+        <!-- Día de la semana -->
+        <div>
+          <label class="block text-gray-700 dark:text-gray-200 mb-2">Día</label>
+          <select formControlName="diaSemana"
+            class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600">
+            <option value="">Seleccione un día</option>
+            @for (dia of diasSemana; track dia.id) {
+              <option [value]="dia.id">{{ dia.titulo }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Productos disponibles -->
+        <div>
+          <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-4">Selecciona Productos</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            @for (producto of productos; track producto.id) {
+              <div (click)="toggleProducto(producto)" [ngClass]="{
+                'border-2 border-green-500': esSeleccionado(producto),
+                'cursor-pointer hover:shadow-lg transition': true
+              }"
+                class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-sm">
+                <h4 class="text-md font-bold dark:text-white">{{ producto.titulo }}</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-300">{{ producto.marca }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-300">Calorías: {{ producto.kcal }} kcal</p>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Botón -->
+        <button type="submit"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 flex justify-center items-center"
+          [disabled]="loading()">
+          <span *ngIf="loading()" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+          Crear Comida
+        </button>
+      </form>
+
+      <!-- Mensaje de éxito -->
+      @if (success()) {
+        <div class="mt-4 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 p-4 rounded-lg">
+          Comida creada con éxito.
+        </div>
+      }
+
+      <!-- Mensaje de error -->
+      @if (error()) {
+        <div class="mt-4 bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100 p-4 rounded-lg">
+          {{ error() }}
+        </div>
+      }
+    </div>
+  </div>
+</div>

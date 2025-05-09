@@ -1,0 +1,13 @@
+
+.container {
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+h2 {
+  text-align: center;
+}
+
+button {
+  margin-left: 10px;
+}

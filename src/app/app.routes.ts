@@ -8,6 +8,8 @@ import { authGuard } from '../core/guards/auth.guard';
 import { RegisterComponent } from './pages/register/register.component';
 import { ProductoListComponent } from './pages/producto-list/producto-list.component';
 import { ProductFormComponent } from './shared/components/product-form/product-form.component';
+import { ProductoDetailComponent } from './pages/producto-detail/producto-detail.component';
+import { ComidaCrearComponent } from './components/comida-crear/comida-crear.component';
 
 export const routes: Routes = [
   {
@@ -45,6 +47,14 @@ export const routes: Routes = [
   {
     path: 'productos/editar/:id',
     component: ProductFormComponent,
+  },
+  {
+    path: 'producto/detalle/:id',
+    component: ProductoDetailComponent,
+  },
+  {
+    path: 'comida',
+    component: ComidaCrearComponent,
   },
   {
     path: 'rutina',

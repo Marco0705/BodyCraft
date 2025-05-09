@@ -1,4 +1,3 @@
-// src/app/services/auth-service.service.ts
 import { inject, Injectable } from '@angular/core';
 import { LoginUserDTO } from '../../interfaces/login-user-dto';
 import { HttpClient } from '@angular/common/http';
@@ -34,12 +33,35 @@ export class AuthServiceService {
           this.getUsuarioByEmail(user.email).subscribe((userInfo) => {
             this.saveUserName(userInfo.name);
             this.saveEmail(userInfo.email);
+            this.saveUserId(userInfo.id);
             // Notificar cambio en estado de autenticación
             this.authStatusChanged.next(true);
           });
         })
       );
   }
+
+  //   getAuthenticatedUserId(): number | null {
+  //   const user = JSON.parse(localStorage.getItem('user') || '{}');
+  //   return user.id || null; // Asumiendo que el objeto usuario tiene un campo 'id'
+  // }
+
+    getAuthenticatedUserId(): number | null {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      const decodedToken: any = jwt_decode(token);
+      return decodedToken.userId || null;
+    }
+    return null;
+  }
+  //   getEmailFromToken(): string | null {
+  //   const token = localStorage.getItem('token');
+  //   if (token) {
+  //     const decoded: any = jwt_decode(token);  // Decodificamos el JWT
+  //     return decoded.sub;  // Suponiendo que el email está en 'sub'
+  //   }
+  //   return null;
+  // }
 
   saveUserName(userName: string) {
     localStorage.setItem('user_name', userName); // Guardamos solo el nombre
@@ -64,6 +86,25 @@ export class AuthServiceService {
   getEmail() {
     return localStorage.getItem('email');
   }
+
+saveUserId(id: number) {
+  localStorage.setItem('user_id', id.toString());
+}
+
+// auth-service.service.ts
+getUserId(): number | null {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.userId || payload.id || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+
 
   logout() {
     localStorage.removeItem('token');
@@ -108,3 +149,7 @@ export class AuthServiceService {
     }
   }
 }
+function jwt_decode(token: string): any {
+  throw new Error('Function not implemented.');
+}
+
