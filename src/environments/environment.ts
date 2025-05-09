@@ -1,4 +1,1 @@
-export const environment = {
-      production: true,
-  apiUrl: 'http://tfg.urbanink.es',
-};
+export const environment = {};
