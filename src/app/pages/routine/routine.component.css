@@ -1,26 +1,133 @@
-/* Estilo para el contenedor principal de la card */
-.card-container {
-  height: 100%;              /* Que ocupe todo el espacio disponible */
-  max-height: none;          /* Elimina límites innecesarios */
+/* Contenedor del carrusel */
+.carousel-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+/* Envolver el carrusel para permitir desplazamiento */
+.carousel-wrapper {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  cursor: grab;
+}
+
+/* Cambiar el cursor cuando esté arrastrando */
+.carousel-wrapper:active {
+  cursor: grabbing;
+}
+
+/* Las tarjetas en el carrusel */
+.card {
+  min-width: 200px;
+  height: 300px;
+  margin: 0 10px;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  transition-duration: 0.5s;
+  transform-origin: center center;
+  opacity: 0.8;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
-  overflow: visible;         /* Permite que las imágenes sobresalgan al hacer hover */
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
-/* Ajusta el tamaño de la imagen dentro de la card */
-.card-container img {
-  width: 450px;              /* Puedes ajustar a lo que prefieras */
-  max-width: 90vw;           /* Para que sea responsive */
-  border-radius: 1rem;
-  transition: transform 0.3s ease-in-out;
+/* Tarjetas más cercanas al centro */
+.card-center {
+  transform: scale(1.2); /* Escalar la tarjeta cuando está en el centro */
+  opacity: 1; /* Hacer la tarjeta más visible */
 }
 
-/* Efecto hover más marcado */
-.card-container img:hover {
-  transform: scale(1.15);
-  z-index: 20;
-  outline: rgb(249, 249, 249) solid 3px;
-  outline-offset: 3px;
+/* Tarjetas a los lados del centro */
+.card-side {
+  transform: scale(0.8); /* Reducir el tamaño de las tarjetas en los extremos */
+  opacity: 0.6;
+}
+
+/* Transición suave al contenedor */
+.carousel-container {
+  transition: transform 0.5s ease;
+}
+
+/* Opcional: Agregar un espaciado adicional si hay un "vacío" */
+.card.vacio {
+  background-color: transparent;
+  opacity: 0;
+}
+
+/* Estilo para el contenedor del mensaje de carga */
+.loading-message {
+  text-align: center;
+  color: #666;
+  font-size: 1rem;
+  padding: 20px;
+}
+
+/* Mensaje de error */
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+}
+
+/* Transiciones suaves */
+.transition-lenta {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Flechas de navegación */
+.arrow-button {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.arrow-button:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.arrow-button img {
+  width: 30px;
+  height: 30px;
+}
+
+/* Estilo para la transición suave de las tarjetas */
+.card-move {
+  transition: transform 0.3s ease;
+}
+
+.card-move:hover {
+  transform: scale(1.05);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .card {
+    min-width: 150px;
+    height: 200px;
+  }
+
+  .arrow-button img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .carousel-wrapper {
+    gap: 10px;
+  }
 }

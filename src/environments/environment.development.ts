@@ -1,16 +1,11 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5001',
+  apiUrl: 'http://localhost:5000',
   apiKey: '',
 };
 
 
-//joseluis@gmail.com
-//joseluis
-
-//test@gmail.com 
-//test
-
-//Para docker
-//testuser@gmail.com
-//test
+/*{
+  "email": "usertest9@example.com",
+  "password": "usertest"
+}*/

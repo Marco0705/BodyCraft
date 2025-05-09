@@ -1,4 +1,86 @@
-<div class="relative md:pb-200 pb-24 flex h-[80vh] items-center">
-  <app-card-dias-semana-component [num]="1" (slideLeft)="slideLeft($event)" 
-  (slideRight)="slideRight($event)"/>
+<div class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+  <!-- Sección principal de la rutina -->
+  <section class="bg-blue-600 dark:bg-blue-800 py-12 mb-8">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">Rutina de Entrenamiento</h1>
+      <p class="text-xl text-blue-100 mb-6 max-w-2xl mx-auto">
+        Planifica tu rutina y sigue tu progreso diariamente
+      </p>
+    </div>
+  </section>
+
+  <!-- Contenedor principal -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+    <!-- Título principal -->
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Mis Rutinas</h2>
+    </div>
+
+    <!-- Mensaje de carga -->
+    <div *ngIf="cargando()" class="text-center text-gray-500 dark:text-gray-400">Cargando rutinas...</div>
+
+    <!-- Mensaje de error -->
+    <div *ngIf="error()" class="p-4 mb-6 text-sm text-red-800 bg-red-50 dark:bg-red-900 rounded-lg">
+      {{ error() }}
+    </div>
+
+    <!-- Cards de días de la semana -->
+    <div class="flex items-center justify-center space-x-4 overflow-hidden">
+      <!-- Tarjeta izquierda -->
+      <ng-container *ngIf="diasVisibles[0]">
+        <a (click)="irAEjerciciosDia(diasVisibles[0])"
+          class="cursor-pointer transition-transform transform hover:scale-105 duration-300">
+          <app-card-dias-semana-component [titulo]="diasVisibles[0].titulo" [pic]="diasVisibles[0].pic"
+            [image]="numerodiassemana[diasVisibles[0].titulo]" class="card-move scale-75 opacity-80">
+          </app-card-dias-semana-component>
+        </a>
+      </ng-container>
+
+      <!-- Contenedor de navegación y tarjetas -->
+      <div *ngIf="diasSemana().length > 0" class="flex items-center justify-center space-x-4">
+        <!-- Flecha izquierda -->
+        <button *ngIf="currentIndex() > 0" (click)="moverIzquierda()"
+          class="p-2 rounded-full hover:bg-gray-700 transition duration-300">
+          <img src="images/flecha izquierda.jpg" alt="Flecha izquierda" class="w-12 h-12">
+        </button>
+
+        <!-- Tarjeta central -->
+        <ng-container *ngIf="diasVisibles[1]">
+          <a (click)="irAEjerciciosDia(diasVisibles[ 1])">
+            <app-card-dias-semana-component [titulo]="diasVisibles[1].titulo" [pic]="diasVisibles[1].pic"
+              [image]="numerodiassemana[diasVisibles[1].titulo]" class="card-move scale-100 z-10">
+            </app-card-dias-semana-component>
+          </a>
+        </ng-container>
+
+        <!-- Flecha derecha -->
+        <button (click)="moverDerecha()" class="p-2 rounded-full hover:bg-gray-700 transition duration-300"
+          [disabled]="currentIndex() >= diasSemana().length - 3">
+          <img src="images/flechaderecha.PNG" alt="Flecha derecha" class="w-12 h-12">
+        </button>
+
+        <!-- Tarjeta derecha -->
+        <ng-container *ngIf="diasVisibles[2]">
+          <a (click)="irAEjerciciosDia(diasVisibles[2])">
+            <app-card-dias-semana-component [titulo]="diasVisibles[2].titulo" [pic]="diasVisibles[2].pic"
+              [image]="numerodiassemana[diasVisibles[2].titulo]" class="card-move scale-75 opacity-80">
+            </app-card-dias-semana-component>
+          </a>
+        </ng-container>
+      </div>
+
+      <!-- Mensaje cuando no hay rutinas -->
+      <div *ngIf="diasSemana().length === 0" class="text-gray-500 dark:text-gray-400 text-center mt-8">
+        No hay rutinas disponibles.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+  <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">Ejercicios del Día</h2>
+  <app-ejercicios-dia [diaId]="selectedDia?.id ?? null" [diaTitulo]="selectedDia?.titulo ?? null"
+    [diaPic]="selectedDia?.pic ?? null" [usuarioId]="usuarioId()">
+  </app-ejercicios-dia>
+
 </div>

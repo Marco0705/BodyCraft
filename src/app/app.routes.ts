@@ -8,6 +8,7 @@ import { authGuard } from '../core/guards/auth.guard';
 import { RegisterComponent } from './pages/register/register.component';
 import { ProductoListComponent } from './pages/producto-list/producto-list.component';
 import { ProductFormComponent } from './shared/components/product-form/product-form.component';
+import { EjerciciosDiaComponent } from './components/ejercicios-dia/ejercicios-dia.component';
 
 export const routes: Routes = [
   {
@@ -49,7 +50,7 @@ export const routes: Routes = [
   {
     path: 'rutina',
     component: RoutineComponent,
-    canActivate: [authGuard],
+    //canActivate: [authGuard],
   },
   {
     path: '**',
