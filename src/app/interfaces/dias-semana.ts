@@ -1,7 +1,10 @@
+import { IComida } from "./icomida";
+
 export interface DiasSemana {
     id: number;
+    nombre?: string;
     titulo: string;
     pic: string;
-    comidas: any[];
+    comidas: IComida[];
     ejercicios: any[];
   }

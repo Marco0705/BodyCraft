@@ -3,12 +3,11 @@ import { RouterOutlet } from '@angular/router';
 import { OnInit } from '@angular/core';
 import { initFlowbite } from 'flowbite';
 import { NavBarComponent } from "./shared/nav-bar/nav-bar.component";
-import { CardComponent } from './components/card/card.component';
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavBarComponent, CardComponent],
+  imports: [RouterOutlet, NavBarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
