@@ -1,5 +1,9 @@
-<div class="dia-card">
-    <h3>{{ dia.titulo }}</h3>
-    <img [src]="getImagenPorDia()" [alt]="dia.titulo" width="150" />
+<div class="card">
+  <div class="header">
+    <h2>{{ titulo }}</h2>
+    <p>{{ pic }}</p>
   </div>
-  
+  <div class="image-container">
+    <img [src]="image" alt="Cromo de la semana" class="cromo-image"/>
+  </div>
+</div>

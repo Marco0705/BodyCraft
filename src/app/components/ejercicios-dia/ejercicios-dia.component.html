@@ -1,0 +1,12 @@
+<div *ngIf="diaId && diaTitulo && diaPic && usuarioId">
+    <h1>DiaId{{diaId}}</h1>
+    <h1>Dia: {{ diaTitulo }}</h1>
+    <h1>Fecha: {{diaPic}}</h1>
+    <p>Usuario ID: {{ usuarioId }}</p> <!-- Mostrar el usuarioId -->
+    <!-- Otros detalles que quieras mostrar -->
+  </div>
+  
+  <div *ngIf="!diaId || !diaTitulo || !diaPic || !usuarioId">
+    <p>No se encontró la información completa para este día.</p>
+  </div>
+  

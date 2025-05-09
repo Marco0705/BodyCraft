@@ -1,34 +1,24 @@
-import { Component, Input } from '@angular/core';
-import { DiasSemanaDto } from '../../interfaces/dias-semana-dto';
 import { CommonModule } from '@angular/common';
+import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-card-dias-semana-component',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './card-dias-semana-component.component.html',
-  styleUrl: './card-dias-semana-component.component.css'
+  styleUrls: ['./card-dias-semana-component.component.css'],
 })
-export class CardDiasSemanaComponentComponent {
-  @Input() dia!: DiasSemanaDto;
+export class CardDiasSemanaComponentComponent implements OnInit {
+  
+  @Input() titulo!: string;  // Nombre del día de la semana
+  @Input() pic!: string;     // Fecha
+  @Input() image!: string;   // Imagen recibida como parámetro
+  @Output() slideLeft = new EventEmitter<string>();
+  @Output() slideRight = new EventEmitter<string>();
 
-  getImagenPorDia(): string {
-    switch (this.dia.titulo.toLowerCase()) {
-      case 'lunes':
-        return '/assets/images/lunes.jpg';
-      case 'martes':
-        return '/assets/images/martes.jpg';
-      case 'miércoles':
-        return '/assets/images/miercoles.jpg';
-      case 'jueves':
-        return '/assets/images/jueves.jpg';
-      case 'viernes':
-        return '/assets/images/viernes.jpg';
-      case 'sábado':
-        return '/assets/images/sabado.jpg';
-      case 'domingo':
-        return '/assets/images/domingo.jpg';
-      default:
-        return '/assets/images/default.jpg';
-    }
+  @ViewChild('slider') slider!: ElementRef;
+
+  ngOnInit(): void {
+    this.image;
   }
 }
