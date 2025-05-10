@@ -1,60 +1,9 @@
-<div class="bg-gray-100 dark:bg-gray-900 rounded-lg shadow-md p-6 mt-6">
-  <!-- Título del día -->
-  <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-4 text-center">
-    Ejercicios del día: {{ diaTitulo }}
-  </h2>
-  <p class="text-gray-600 dark:text-gray-300 mb-2 text-center">ID Día: {{ diaId }}</p>
-  <p class="text-gray-600 dark:text-gray-300 mb-2 text-center">Fecha: {{ diaPic }}</p>
-  <p class="text-gray-600 dark:text-gray-300 mb-4 text-center">Usuario ID: {{ usuarioId }}</p>
-
-  <!-- Mensaje de carga -->
-  <div *ngIf="cargando" class="text-gray-500 dark:text-gray-400 text-center">
-    Cargando ejercicios...
+<div class="card">
+  <div class="header">
+    <h2>{{ titulo }}</h2>
+    <p>{{ pic }}</p>
   </div>
-
-  <!-- Mensaje de error -->
-  <div *ngIf="error" class="text-red-600 text-center mb-4">
-    {{ error }}
+  <div class="image-container">
+    <img #imageElement [src]="image" alt="Cromo de la semana" class="cromo-image"/>
   </div>
-
-  <!-- Tabla de ejercicios -->
-  <div *ngIf="ejercicios.length > 0; else noData">
-    <table class="min-w-full bg-white dark:bg-gray-800 rounded-md shadow-lg">
-      <thead>
-        <tr class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-lg">
-          <th class="py-3 px-6 border-b text-left">Ejercicio</th>
-          <th class="py-3 px-6 border-b text-left">Grupo Muscular</th>
-          <th class="py-3 px-6 border-b text-left">Repeticiones</th>
-          <th class="py-3 px-6 border-b text-left">Peso (kg)</th>
-          <th class="py-3 px-6 border-b text-left">Video</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of ejercicios; let i = index"
-            [ngClass]="{
-              'bg-gray-100 dark:bg-gray-700': i % 2 === 0,
-              'bg-white dark:bg-gray-800': i % 2 !== 0
-            }"
-            class="hover:bg-gray-200 dark:hover:bg-gray-600 transition duration-200 ease-in-out">
-          <td class="py-2 px-6 border-b">{{ item.ejercicioData.nombre }}</td>
-          <td class="py-2 px-6 border-b">{{ item.ejercicioData.grupoMuscular }}</td>
-          <td class="py-2 px-6 border-b">{{ item.reps }}</td>
-          <td class="py-2 px-6 border-b">{{ item.peso }}</td>
-          <td class="py-2 px-6 border-b">
-            <a *ngIf="item.ejercicioData.urlVideo" [href]="item.ejercicioData.urlVideo" target="_blank" 
-               class="text-blue-500 hover:underline">
-              Ver Video
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Mensaje cuando no hay ejercicios -->
-  <ng-template #noData>
-    <p class="text-gray-500 dark:text-gray-400 text-center mt-4">
-      No hay ejercicios registrados para este día.
-    </p>
-  </ng-template>
 </div>
