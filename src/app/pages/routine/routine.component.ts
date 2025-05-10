@@ -23,7 +23,7 @@ export class RoutineComponent implements OnInit {
   cargando = signal<boolean>(false);
   error = signal<string | null>(null);
   numerodiassemana: { [key: string]: string } = {};
-  selectedDia: { id: number | undefined; titulo: string | undefined; pic: string | undefined } | null = null;
+  selectedDia: { id: number; titulo: string; pic: string } | null = null;
 
   // Variables para el arrastre
   isDragging = false;
@@ -160,12 +160,12 @@ export class RoutineComponent implements OnInit {
   images: string[] = [
     'images/HOMBRE11.PNG',
     'images/HOMBRE12.PNG',
-    'images/Hombre1PNG',
-    'images/Hombre2.PNG',
-    'images/Hombre3.PNG',
-    'images/Mujer1.PNG',
-    'images/Mujer2.PNG',
-    'images/Mujer3.PNG'
+    'images/Hombre1.jpg',
+    'images/Hombre2.jpg',
+    'images/Hombre3.jpg',
+    'images/Mujer1.jpg',
+    'images/Mujer2.jpg',
+    'images/Mujer3.jpg'
   ];
 
   getRandomImage(): string {

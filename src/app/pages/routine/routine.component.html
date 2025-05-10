@@ -77,10 +77,9 @@
   </div>
 </div>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-  <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">Ejercicios del Día</h2>
-  <app-ejercicios-dia [diaId]="selectedDia?.id ?? null" [diaTitulo]="selectedDia?.titulo ?? null"
-    [diaPic]="selectedDia?.pic ?? null" [usuarioId]="usuarioId()">
+<div *ngIf="selectedDia" class="mt-8">
+  <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">Ejercicios del Día: {{ selectedDia.titulo || null }}</h2>
+  <app-ejercicios-dia [diaId]="selectedDia.id" [diaTitulo]="selectedDia.titulo" [diaPic]="selectedDia.pic"
+    [usuarioId]="usuarioId() ?? 0">
   </app-ejercicios-dia>
-
 </div>
