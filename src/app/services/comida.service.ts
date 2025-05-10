@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
-import { IComida } from '../interfaces/icomida';
+import { IComida, ICreateComidaDTO } from '../interfaces/icomida';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +21,23 @@ export class ComidaService {
     return this.http.get<IComida>(`${this.apiUrl}/${id}`);
   }
 
-  // 👉 Aquí agregas el método para asociar producto a comida:
-  asociarProductoAComida(comidaId: number, productoId: number) {
-    return this.http.post(`${this.apiUrl}/AssociateProductoToComida/${comidaId}/${productoId}`, {});
+  removeProductoFromComida(comidaId: number, productoId: number): Observable<void> {
+    // Mock implementation for removing a product from a meal
+    console.log(`Removing product ${productoId} from meal ${comidaId}`);
+    return of();
   }
+
+  asociarProductoAComida(comidaId: number, productoId: number, gramos: number) {
+    return this.http.post(`${this.apiUrl}/AssociateProductoToComida/${comidaId}/${productoId}`, { gramos });
+  }
+
+  crearComidas(comidasDTO: ICreateComidaDTO[]): Observable<IComida[]> {
+    return this.http.post<IComida[]>(`${this.apiUrl}/CreateComida`, comidasDTO);
+  }
+  
+  
+  asociarProducto(comidaId: number, productoId: number): Promise<any> {
+    return this.http.post(`${this.apiUrl}/AssociateProductoToComida/${comidaId}/${productoId}`, {}).toPromise();
+  }
+  
 }

@@ -4,6 +4,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProductoService } from '../../../services/producto.service';
 import { IProducto } from '../../../interfaces/iproducto';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-product-form',
@@ -15,6 +16,7 @@ export class ProductFormComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private productoService = inject(ProductoService);
+  private alertService = inject(AlertService);
   
   form = new FormGroup({
     titulo: new FormControl('', {
@@ -49,8 +51,7 @@ export class ProductFormComponent {
       nonNullable: true,
       validators: [Validators.required, Validators.min(0)]
     }),
-    descripcion: new FormControl(''),
-    urlImagen: new FormControl('')
+    urlimagen: new FormControl('')
   });
   
   isEditing = signal<boolean>(false);
@@ -70,16 +71,22 @@ export class ProductFormComponent {
       this.isEditing.set(true);
       this.productId.set(Number(id));
       this.loadProduct(Number(id));
+    } else {
+      // Si es un nuevo producto, establece un valor por defecto para tipoComida
+      this.form.controls.tipoComida.setValue(this.tiposComida()[0]);
     }
   }
 
   loadProduct(id: number): void {
     this.isLoading.set(true);
+    this.alertService.loading('Cargando producto...');
 
     this.productoService.getProductoById(id).subscribe({
       next: (producto) => {
-        // Fill the form with product data
-        this.form.setValue({
+        console.log('Producto cargado para edición:', producto);
+        
+        // Utilizar patchValue en lugar de setValue para no fallar si faltan campos
+        this.form.patchValue({
           titulo: producto.titulo,
           tipoComida: producto.tipoComida,
           marca: producto.marca,
@@ -88,14 +95,23 @@ export class ProductFormComponent {
           proteinas: producto.proteinas || 0,
           grasas: producto.grasas || 0,
           carbohidratos: producto.carbohidratos || 0,
-          descripcion: '', // Removed usage of producto.descripcion as it does not exist in IProducto
-          urlImagen: producto.urlimagen || ''
+          urlimagen: producto.urlimagen || ''
         });
+        
+        // Verificación específica para tipoComida
+        if (!producto.tipoComida || producto.tipoComida.trim() === '') {
+          console.warn('Campo tipoComida vacío en producto existente, asignando valor por defecto');
+          this.form.controls.tipoComida.setValue(this.tiposComida()[0]);
+        }
+        
         this.isLoading.set(false);
+        this.alertService.close();
       },
       error: (error) => {
         this.errorMessage.set('Error al cargar el producto. Intente nuevamente.');
         this.isLoading.set(false);
+        this.alertService.close();
+        this.alertService.error('Error', 'No se pudo cargar la información del producto');
         console.error('Error loading product', error);
       }
     });
@@ -104,29 +120,80 @@ export class ProductFormComponent {
   onSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.alertService.warning('Formulario incompleto', 'Por favor, completa todos los campos obligatorios');
       return;
     }
-
+  
     this.isSaving.set(true);
-    const productoData: IProducto = this.form.getRawValue();
-
+    this.alertService.loading(this.isEditing() ? 'Actualizando producto...' : 'Guardando producto...');
+    
+    const formData = this.form.getRawValue();
+    
+    // Depuración: Verificar los valores antes de enviar
+    console.log('Datos del formulario antes de enviar:', formData);
+    console.log('Valor de tipoComida:', formData.tipoComida);
+  
+    // Crear un objeto con los nombres de campos que el backend espera
+    const productoData: IProducto = {
+      titulo: formData.titulo,
+      tipoComida: formData.tipoComida,
+      marca: formData.marca,
+      cantGramos: formData.cantGramos,
+      kcal: formData.kcal,
+      proteinas: formData.proteinas,
+      grasas: formData.grasas,
+      carbohidratos: formData.carbohidratos,
+      urlimagen: formData.urlimagen ?? '' // Nota la conversión de urlImagen a urlimagen
+    };
+  
     if (this.isEditing()) {
-      // Update existing product (implementation depends on your API)
-      // Since your API doesn't have an update method, this would need to be implemented
-      // For now, we'll just redirect back to the list
-      alert('La API no tiene un método para actualizar productos. Esta funcionalidad debe ser implementada en el backend.');
-      this.router.navigate(['/productos']);
+      // Añadimos el ID al objeto de datos para la actualización
+      productoData.id = this.productId() ?? undefined;
+      
+      console.log('Enviando datos para actualización:', productoData);
+      
+      // Utilizamos el método updateProducto del servicio
+      this.productoService.updateProducto(this.productId()!, productoData).subscribe({
+        next: (updatedProducto) => {
+          console.log('Producto actualizado correctamente:', updatedProducto);
+          this.isSaving.set(false);
+          this.alertService.close();
+          this.alertService.success('Producto actualizado', 'El producto ha sido actualizado correctamente');
+          
+          // Navegar de vuelta a la lista después de mostrar el mensaje
+          setTimeout(() => {
+            this.router.navigate(['/productos']);
+          }, 1500);
+        },
+        error: (error) => {
+          this.errorMessage.set('Error al actualizar el producto. Por favor, inténtalo de nuevo.');
+          this.isSaving.set(false);
+          this.alertService.close();
+          this.alertService.error('Error', 'No se pudo actualizar el producto. Por favor, inténtalo de nuevo.');
+          console.error('Error updating product:', error);
+        }
+      });
     } else {
-      // Create new product
+      console.log('Enviando datos para creación:', productoData);
+      
+      // Crear nuevo producto
       this.productoService.createProducto(productoData).subscribe({
         next: () => {
           this.isSaving.set(false);
-          this.router.navigate(['/productos']);
+          this.alertService.close();
+          this.alertService.success('Producto creado', 'El producto ha sido creado correctamente');
+          
+          // Navegar de vuelta a la lista después de mostrar el mensaje
+          setTimeout(() => {
+            this.router.navigate(['/productos']);
+          }, 1500);
         },
         error: (error) => {
-          this.errorMessage.set('Error al guardar el producto. Intente nuevamente.');
+          this.errorMessage.set('Error al guardar el producto. Por favor, inténtalo de nuevo.');
           this.isSaving.set(false);
-          console.error('Error saving product', error);
+          this.alertService.close();
+          this.alertService.error('Error', 'No se pudo crear el producto. Por favor, inténtalo de nuevo.');
+          console.error('Error saving product:', error);
         }
       });
     }
@@ -163,5 +230,18 @@ export class ProductFormComponent {
     }
     
     return 'Campo inválido';
+  }
+  
+  cancelarEdicion(): void {
+    this.alertService.confirm(
+      'Cancelar edición', 
+      '¿Estás seguro de que deseas cancelar? Los cambios no guardados se perderán.',
+      'Sí, cancelar',
+      'No, continuar editando'
+    ).then((result) => {
+      if (result.isConfirmed) {
+        this.router.navigate(['/productos']);
+      }
+    });
   }
 }

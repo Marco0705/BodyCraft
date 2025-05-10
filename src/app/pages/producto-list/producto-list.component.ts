@@ -1,9 +1,10 @@
-import { Component, computed, inject, Inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { IProducto } from '../../interfaces/iproducto';
 import { ProductoService } from '../../services/producto.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-producto-list',
@@ -13,6 +14,9 @@ import { CommonModule } from '@angular/common';
 })
 export class ProductoListComponent {
   private productoService = inject(ProductoService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private alertService = inject(AlertService);
   
   productos = signal<IProducto[]>([]);
   totalItems = signal<number>(0);
@@ -21,13 +25,15 @@ export class ProductoListComponent {
   searchTerm = signal<string>('');
   searchType = signal<string>('titulo'); // 'titulo', 'marca', 'tipoComida'
   isLoading = signal<boolean>(false);
-  isDeleting = signal<boolean>(false);
+  isDeletingProducto = signal<{[key: number]: boolean}>({});
   successMessage = signal<string | null>(null);
   errorMessage = signal<string | null>(null);
 
   // Computed values
   totalPages = computed(() => Math.ceil(this.totalItems() / this.pageSize()));
   
+  calculateMinValue = computed(() => Math.min((this.currentPage() + 1) * this.pageSize(), this.totalItems()));
+
   pages = computed(() => {
     const pageCount = this.totalPages();
     const maxVisiblePages = 5;
@@ -59,6 +65,13 @@ export class ProductoListComponent {
 
   ngOnInit(): void {
     this.loadProductos();
+    
+    // Verificar si hay mensajes de éxito en los parámetros de consulta (después de crear o actualizar)
+    this.route.queryParams.subscribe(params => {
+      if (params['success']) {
+        this.alertService.success('Éxito', params['success']);
+      }
+    });
   }
 
   loadProductos(): void {
@@ -69,14 +82,16 @@ export class ProductoListComponent {
       // Sin búsqueda, cargar todos con paginación
       this.productoService.getProductosPaged(this.currentPage(), this.pageSize()).subscribe({
         next: (response) => {
-          this.productos.set(response.content);
-          this.totalItems.set(response.totalElements);
+          this.productos.set(response.content || []);
+          this.totalItems.set(response.totalElements || 0);
           this.isLoading.set(false);
         },
         error: (error) => {
           this.errorMessage.set('Error al cargar los productos. Por favor, inténtalo de nuevo.');
+          this.alertService.error('Error', 'No se pudieron cargar los productos');
           console.error('Error loading products:', error);
           this.isLoading.set(false);
+          this.productos.set([]);
         }
       });
     } else {
@@ -87,14 +102,16 @@ export class ProductoListComponent {
             this.searchTerm(), this.currentPage(), this.pageSize()
           ).subscribe({
             next: (response) => {
-              this.productos.set(response.content);
-              this.totalItems.set(response.totalElements);
+              this.productos.set(response.content || []);
+              this.totalItems.set(response.totalElements || 0);
               this.isLoading.set(false);
             },
             error: (error) => {
               this.errorMessage.set('Error al buscar productos por título.');
+              this.alertService.error('Error', 'No se pudieron buscar productos por título');
               console.error('Error searching by title:', error);
               this.isLoading.set(false);
+              this.productos.set([]);
             }
           });
           break;
@@ -104,14 +121,16 @@ export class ProductoListComponent {
             this.searchTerm(), this.currentPage(), this.pageSize()
           ).subscribe({
             next: (response) => {
-              this.productos.set(response.content);
-              this.totalItems.set(response.totalElements);
+              this.productos.set(response.content || []);
+              this.totalItems.set(response.totalElements || 0);
               this.isLoading.set(false);
             },
             error: (error) => {
               this.errorMessage.set('Error al buscar productos por marca.');
+              this.alertService.error('Error', 'No se pudieron buscar productos por marca');
               console.error('Error searching by brand:', error);
               this.isLoading.set(false);
+              this.productos.set([]);
             }
           });
           break;
@@ -121,14 +140,16 @@ export class ProductoListComponent {
             this.searchTerm(), this.currentPage(), this.pageSize()
           ).subscribe({
             next: (response) => {
-              this.productos.set(response.content);
-              this.totalItems.set(response.totalElements);
+              this.productos.set(response.content || []);
+              this.totalItems.set(response.totalElements || 0);
               this.isLoading.set(false);
             },
             error: (error) => {
               this.errorMessage.set('Error al buscar productos por tipo de comida.');
+              this.alertService.error('Error', 'No se pudieron buscar productos por tipo de comida');
               console.error('Error searching by food type:', error);
               this.isLoading.set(false);
+              this.productos.set([]);
             }
           });
           break;
@@ -146,32 +167,74 @@ export class ProductoListComponent {
     this.loadProductos();
   }
 
-  eliminar(id: number): void {
-    console.log('Intentando eliminar producto con ID:', id);
-    
+  // Método para editar un producto
+  editar(id: number): void {
     if (!id) {
-      this.errorMessage.set('ID de producto no válido');
+      this.alertService.error('Error', 'ID de producto no válido');
       return;
     }
     
-    if (confirm('¿Estás seguro de eliminar este producto?')) {
-      this.isDeleting.set(true);
-      this.clearMessages();
-      
-      this.productoService.deleteProducto(id).subscribe({
-        next: () => {
-          console.log('Producto eliminado correctamente');
-          this.successMessage.set('Producto eliminado correctamente');
-          this.isDeleting.set(false);
-          this.loadProductos(); // Recargar la lista después de eliminar
-        },
-        error: (error) => {
-          console.error('Error al eliminar producto:', error);
-          this.errorMessage.set('Error al eliminar el producto. Por favor, inténtalo de nuevo.');
-          this.isDeleting.set(false);
-        }
-      });
+    this.router.navigate(['/productos/editar', id]);
+  }
+
+  // Método para ver detalles de un producto
+  verDetalle(id: number): void {
+    if (!id) {
+      this.alertService.error('Error', 'ID de producto no válido');
+      return;
     }
+    
+    this.router.navigate(['/producto/detalle', id]);
+  }
+
+  eliminar(id: number): void {
+    if (!id) {
+      this.alertService.error('Error', 'ID de producto no válido');
+      return;
+    }
+    
+    this.alertService.confirm(
+      '¿Eliminar producto?', 
+      '¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.',
+      'Sí, eliminar',
+      'No, cancelar'
+    ).then((result) => {
+      if (result.isConfirmed) {
+        // Marcar este producto como "eliminando"
+        const currentDeleting = this.isDeletingProducto();
+        currentDeleting[id] = true;
+        this.isDeletingProducto.set({...currentDeleting});
+        
+        this.clearMessages();
+        this.alertService.loading('Eliminando producto...');
+        
+        this.productoService.deleteProducto(id).subscribe({
+          next: () => {
+            // Marcar como ya no eliminando
+            const currentDeleting = this.isDeletingProducto();
+            delete currentDeleting[id];
+            this.isDeletingProducto.set({...currentDeleting});
+            
+            this.alertService.close(); // Cerrar el loader
+            this.alertService.success('Producto eliminado', 'El producto ha sido eliminado correctamente');
+            
+            // Recargar la lista de productos
+            this.loadProductos();
+          },
+          error: (error) => {
+            // Marcar como ya no eliminando
+            const currentDeleting = this.isDeletingProducto();
+            delete currentDeleting[id];
+            this.isDeletingProducto.set({...currentDeleting});
+            
+            this.alertService.close(); // Cerrar el loader
+            this.errorMessage.set('Error al eliminar el producto. Por favor, inténtalo de nuevo.');
+            this.alertService.error('Error', 'No se pudo eliminar el producto. Por favor, inténtalo de nuevo.');
+            console.error('Error deleting product:', error);
+          }
+        });
+      }
+    });
   }
 
   clearMessages(): void {
@@ -179,8 +242,8 @@ export class ProductoListComponent {
     this.errorMessage.set(null);
   }
 
-  calculateMinValue(): number {
-    return Math.min((this.currentPage() + 1) * this.pageSize(), this.totalItems());
+  isDeleting(id: number): boolean {
+    return this.isDeletingProducto()[id] === true;
   }
   
 }
