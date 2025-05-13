@@ -2,7 +2,7 @@ import { IComida } from "./icomida";
 
 export interface DiasSemana {
     id: number;
-    nombre?: string;
+    //nombre?: string;
     titulo: string;
     pic: string;
     comidas: IComida[];

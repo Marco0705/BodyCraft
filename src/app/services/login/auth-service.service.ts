@@ -11,7 +11,7 @@ import { Register } from '../../interfaces/register/register';
   providedIn: 'root',
 })
 export class AuthServiceService {
-  private apiUrl = `${environment.apiUrl}/auth`;
+  private apiUrl = `/auth`;
   private http: HttpClient = inject(HttpClient);
   private router: Router = inject(Router);
 
@@ -148,12 +148,7 @@ getUserId(): number | null {
       return true;
     }
   }
-<<<<<<< HEAD
-}
-=======
 }
 function jwt_decode(token: string): any {
   throw new Error('Function not implemented.');
 }
-
->>>>>>> master

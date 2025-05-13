@@ -1,27 +1,29 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
-import { UsuarioEjercicioDto } from '../../interfaces/usuario-ejercicio-dto';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RoutineServiceService } from '../../services/routine/routine-service.service';
 import { EjercicioDto } from '../../interfaces/ejercicio-dto';
+import { CommonModule } from '@angular/common';
+import { GruposMuscularesComponent } from "../grupos-musculares/grupos-musculares.component";
 
 @Component({
   selector: 'app-ejercicios-dia',
   templateUrl: './ejercicios-dia.component.html',
-  imports: [CommonModule],
+  imports: [CommonModule, GruposMuscularesComponent],
+  styleUrls: ['./ejercicios-dia.component.css'],
   standalone: true,
-  styleUrls: ['./ejercicios-dia.component.css']
 })
-export class EjerciciosDiaComponent implements OnInit {
+export class EjerciciosDiaComponent implements OnInit, OnChanges {
   @Input() diaId: number | null = null;
   @Input() diaTitulo: string | null = null;
   @Input() diaPic: string | null = null;
   @Input() usuarioId: number | null = null;
 
+  mostrarGruposMusculares: boolean = false;
   ejercicios: { ejercicioData: EjercicioDto, reps: number, peso: number }[] = [];
   cargando: boolean = true;
   error: string | null = null;
 
-  constructor(private routineService: RoutineServiceService) {}
+  constructor(private routineService: RoutineServiceService, private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
     if (this.usuarioId) {
@@ -29,60 +31,53 @@ export class EjerciciosDiaComponent implements OnInit {
     }
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['diaId'] && !changes['diaId'].firstChange) {
+      this.cargarEjercicios();
+    }
+  }
+
   cargarEjercicios(): void {
-    if (this.usuarioId) {
+    if (this.diaId) {
       this.cargando = true;
-      this.routineService.getUsuarioEjercicio(this.usuarioId).subscribe({
-        next: async (data: UsuarioEjercicioDto[]) => {
-          // Filtrar los ejercicios por el día seleccionado
-          const ejerciciosFiltrados = data.filter(ejercicio => ejercicio.diaSemanaId === this.diaId);
+      this.error = null;
 
-          if (ejerciciosFiltrados.length === 0) {
-            this.error = 'No hay ejercicios para este día.';
-            this.cargando = false;
-            return;
-          }
-
-          try {
-            // Obtener información detallada de cada ejercicio
-            const observables = ejerciciosFiltrados.map(async (ejercicio) => {
-              const ejercicioData = await this.routineService.getEjercicioById(ejercicio.ejercicioId).toPromise();
-
-              // Verificar si el ejercicioData es undefined
-              if (!ejercicioData) {
-                console.warn(`El ejercicio con ID ${ejercicio.ejercicioId} no se encontró.`);
-                return null;
-              }
-
-              return {
-                ejercicioData,
-                reps: ejercicio.reps,
-                peso: ejercicio.peso
-              };
-            });
-
-            const resultados = await Promise.all(observables);
-
-            // Filtrar los resultados válidos
-            this.ejercicios = resultados.filter((res): res is { ejercicioData: EjercicioDto, reps: number, peso: number } => res !== null);
-
-            if (this.ejercicios.length === 0) {
-              this.error = 'No hay ejercicios válidos para mostrar.';
-            }
-            this.cargando = false;
-            console.log('Ejercicios detallados:', this.ejercicios);
-          } catch (err) {
-            this.error = 'Error al cargar los detalles de los ejercicios.';
-            console.error('❌ Error al cargar ejercicios:', err);
-            this.cargando = false;
-          }
+      this.routineService.getEjerciciosByDiaSemana(this.diaId).subscribe({
+        next: (data: EjercicioDto[]) => {
+          this.ejercicios = data.map(ejercicio => ({
+            ejercicioData: ejercicio,
+            reps: ejercicio.numeroRepeticiones || 0,
+            peso: ejercicio.ultimoPesoTirado || 0,
+          }));
+          this.cargando = false;
         },
-        error: (err: any) => {
-          this.error = 'Error al cargar los ejercicios.';
-          console.error('❌ Error al cargar ejercicios:', err);
+        error: () => {
+          this.error = 'Error al cargar los ejercicios del día.';
           this.cargando = false;
         }
       });
+    } else {
+      this.error = 'Día no seleccionado.';
+      this.ejercicios = [];
     }
   }
+
+  sanitizeUrl(url: string): SafeResourceUrl {
+    // Expresión regular para capturar el ID del video en varias URLs de YouTube
+    const videoIdMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]+)/);
+    const videoId = videoIdMatch ? videoIdMatch[1] : null;
+
+    // Si encontramos el ID, construimos la URL embebida
+    if (videoId) {
+      const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}`;
+      return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
+    }
+
+    // Si el enlace no es válido, devolver el URL sin modificar
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
+  toggleGruposMusculares(): void {
+    this.mostrarGruposMusculares = !this.mostrarGruposMusculares;
+  }
+
 }
