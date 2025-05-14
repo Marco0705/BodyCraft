@@ -9,7 +9,7 @@ import { Observable, of } from 'rxjs';
 })
 export class ComidaService {
 
-  private apiUrl = `${environment.apiUrl}/api/Comida`;
+  private apiUrl = `/api/Comida`;
 
   constructor(private http: HttpClient) {}
 

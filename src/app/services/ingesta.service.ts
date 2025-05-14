@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment.development';
 })
 export class IngestaService {
 
-private apiUrl = `${environment.apiUrl}/api/ingestas`;
+private apiUrl = `$/api/ingestas`;
 
   constructor(private http: HttpClient) {}
 // Obtener todas las ingestas

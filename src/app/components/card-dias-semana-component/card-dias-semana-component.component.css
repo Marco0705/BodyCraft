@@ -1,37 +1,43 @@
+/* Estilo de la tarjeta */
 .card {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: top;
   justify-content: center;
-  padding: 1rem;
-  margin: 1rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-  width: 300px;
+  padding: 2rem; /* Aumentamos el padding para más espacio */
+  margin: 0rem; /* Aumentamos el margen para más separación */
+  border-radius: 0; /* Eliminamos el borde */
+  /*box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);  Sombra más fuerte */
+  background-color: transparent;
+  width: 700px; /* Aumentamos el tamaño de la tarjeta */
+  height: 1000px; /* Aumentamos la altura de la tarjeta */
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
+/* Contenedor de la imagen */
 .image-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-}
-
-.cromo-image {
+  align-items: flex-start; /* Alineamos la imagen al inicio (arriba) */
+  background-color: transparent;
   width: 100%;
   height: auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  margin-top: 0;
 }
 
+/* Estilo de la imagen */
+.cromo-image {
+  width: 100%; /* Aseguramos que la imagen ocupe todo el contenedor */
+  height: 500px; /* Aumentamos la altura de la imagen */
+  border-radius: 0; /* Eliminamos cualquier borde */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra más fuerte */
+  object-fit: contain; /* Mantiene la proporción sin cortar */
+}
+
+/* Contenedor de la tarjeta */
 .card-container {
   width: 100%;
-  height: 350px;
+  height: 500px; /* Aumentamos la altura del contenedor */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -41,11 +47,21 @@
 /* Carrusel horizontal */
 .slider {
   display: flex;
-  gap: 1.5rem;
+  gap: 3rem; /* Aumentamos el espacio entre las tarjetas */
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   white-space: nowrap;
   cursor: grab;
+}
+
+p, h1{
+  font-size: 1.5rem; /* Aumentamos el tamaño de la fuente */
+  font-weight: bold; /* Hacemos el texto más grueso */
+  color: #333; /* Cambiamos el color del texto */
+  text-align: center; /* Centramos el texto */
+  margin-top: 0; /* Eliminamos el margen superior */
+  color: wheat;
+  z-index: 10;
 }
 
 .slider:active {
@@ -54,20 +70,10 @@
 
 /* Imágenes dentro del carrusel */
 .image-item {
-  width: 200px;
-  height: 300px;
+  width: 500px; /* Aumentamos el tamaño de cada imagen dentro del carrusel */
+  height: 1000px; /* Aumentamos la altura de las imágenes */
   flex-shrink: 0;
+  margin-top: 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
-  border-radius: 15px;
   object-fit: cover;
-}
-
-/* Efecto de desplazamiento */
-.slider::-webkit-scrollbar {
-  display: none;
-}
-
-.slider {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 }

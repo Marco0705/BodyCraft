@@ -59,7 +59,7 @@ export const routes: Routes = [
   {
     path: 'rutina',
     component: RoutineComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
   },
   {
     path: '**',

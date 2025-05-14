@@ -10,7 +10,7 @@ import { IProducto } from '../interfaces/iproducto';
 })
 export class ProductoService {
 
-  private apiUrl = `${environment.apiUrl}/api/Producto`;
+  private apiUrl = `/api/Producto`;
 
   constructor(private http: HttpClient) {}
   // Obtener todos los productos

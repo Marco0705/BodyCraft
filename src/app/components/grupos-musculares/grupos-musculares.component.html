@@ -1,0 +1,15 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  <div *ngFor="let grupo of gruposMusculares" 
+       class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden cursor-pointer"
+       (click)="seleccionarGrupo(grupo)">
+    <img [src]="grupo.imagen" alt="{{ grupo.nombre }}" class="w-full h-48 object-cover">
+    <div class="p-4 text-center">
+      <h3 class="text-xl font-bold text-gray-800 dark:text-white">{{ grupo.nombre }}</h3>
+    </div>
+  </div>
+</div>
+
+<!-- Componente de detalles, visible solo si se ha seleccionado un grupo -->
+<div *ngIf="mostrarDetalle" class="mt-6">
+  <app-ejercicios-musculo [grupo]="grupoSeleccionado"></app-ejercicios-musculo>
+</div>

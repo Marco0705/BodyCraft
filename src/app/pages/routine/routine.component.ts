@@ -23,7 +23,7 @@ export class RoutineComponent implements OnInit {
   cargando = signal<boolean>(false);
   error = signal<string | null>(null);
   numerodiassemana: { [key: string]: string } = {};
-  selectedDia: { id: number | undefined; titulo: string | undefined; pic: string | undefined } | null = null;
+  selectedDia: { id: number; titulo: string; pic: string } | null = null;
 
   // Variables para el arrastre
   isDragging = false;
@@ -158,14 +158,14 @@ export class RoutineComponent implements OnInit {
 
   // Mapear cada día de la semana a una lista de imágenes posibles
   images: string[] = [
-    'images/HOMBRE11.PNG',
-    'images/HOMBRE12.PNG',
-    'images/Hombre1.jpg',
-    'images/Hombre2.jpg',
-    'images/Hombre3.jpg',
-    'images/Mujer1.jpg',
-    'images/Mujer2.jpg',
-    'images/Mujer3.jpg'
+    'images/persona1.png',
+    'images/persona2.png',
+    'images/persona3.png',
+    'images/persona4.png',
+    'images/persona5.png',
+    'images/persona6.png',
+    'images/chica4.png',
+    'images/chico4.png'
   ];
 
   getRandomImage(): string {

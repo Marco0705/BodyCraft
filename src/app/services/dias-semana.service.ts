@@ -10,7 +10,7 @@ import { DiasSemana } from '../interfaces/dias-semana';
 export class DiasSemanaService {
 
 
-  private apiUrl = `${environment.apiUrl}/api/DiasSemana`;
+  private apiUrl = `/api/DiasSemana`;
 
   constructor(private http: HttpClient) {}
 

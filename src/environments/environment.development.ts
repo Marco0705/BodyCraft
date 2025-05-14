@@ -5,12 +5,7 @@ export const environment = {
 };
 
 
-//joseluis@gmail.com
-//joseluis
-
-//test@gmail.com 
-//test
-
-//Para docker
-//testuser@gmail.com
-//test
+/*{
+  "email": "usertest9@example.com",
+  "password": "usertest"
+}*/
