@@ -4,7 +4,7 @@ export default {
     host: '0.0.0.0',  // Permite conexiones desde cualquier IP
     port: 4200,       // El puerto en el que el servidor Angular estará escuchando
     allowedHosts: [
-      'bodycraftweb.josbotdev.es', // Permite solicitudes desde este dominio
+      'bodycraft.josbotdev.es', // Permite solicitudes desde este dominio
       '0.0.0.0', // Asegúrate de permitir conexiones desde 0.0.0.0 también
       'localhost',
       '127.0.0.1'

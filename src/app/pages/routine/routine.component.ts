@@ -163,7 +163,9 @@ export class RoutineComponent implements OnInit {
     'images/persona3.png',
     'images/persona4.png',
     'images/persona5.png',
-    'images/persona6.png'
+    'images/persona6.png',
+    'images/chica4.png',
+    'images/chico4.png'
   ];
 
   getRandomImage(): string {

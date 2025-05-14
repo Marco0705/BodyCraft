@@ -16,6 +16,7 @@ export class GruposMuscularesComponent {
     { nombre: 'Hombros', imagen: 'images/Hombre2.jpg' },
     { nombre: 'Piernas', imagen: 'images/Hombre3.jpg' },
     { nombre: 'Abdomen', imagen: 'images/Mujer2.jpg' },
+    
   ];
 
   mostrarDetalle = false;

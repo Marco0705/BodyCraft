@@ -10,7 +10,7 @@ import { EjercicioDto } from '../../interfaces/ejercicio-dto';  // Nueva interfa
   providedIn: 'root'
 })
 export class RoutineServiceService {
-  private apiUrl = `${environment.apiUrl}/api`;
+  private apiUrl = `$/api`;
   private http: HttpClient = inject(HttpClient);
   private router: Router = inject(Router);
 
