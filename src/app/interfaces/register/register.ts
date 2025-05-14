@@ -4,6 +4,6 @@ export interface Register {
   password: string;
   name: string;
   email: string;
-    rolIds: number[];
-    diasSemanaIds: number[];
+   /*  rolIds: number[];
+    diasSemanaIds: number[]; */
 }

@@ -23,7 +23,7 @@ export class RoutineComponent implements OnInit {
   cargando = signal<boolean>(false);
   error = signal<string | null>(null);
   numerodiassemana: { [key: string]: string } = {};
-  selectedDia: { id: number; titulo: string; pic: string } | null = null;
+  selectedDia!: { id: number, titulo: string, pic: string } | null;
 
   // Variables para el arrastre
   isDragging = false;

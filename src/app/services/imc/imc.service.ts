@@ -2,6 +2,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 
 export interface ResultadoIMC {
   imc: number;
@@ -14,7 +15,7 @@ export interface ResultadoIMC {
 })
 export class ImcService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:5000/api/Fisico';
+  private baseUrl = `${environment.apiUrl}/api/Fisico`;
 
   /**
    * Calcula el IMC enviando el peso y altura a la API

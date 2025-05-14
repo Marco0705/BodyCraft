@@ -56,8 +56,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
       username: form.get('name')?.value,
       password: form.get('password')?.value,
       email: form.get('email')?.value,
-      rolIds: [0],
-      diasSemanaIds: [0],
+    /*   rolIds: [0],
+      diasSemanaIds: [0], */
     };
 
     this.subscriptions.add(

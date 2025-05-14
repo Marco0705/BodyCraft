@@ -5,17 +5,14 @@ import { Observable } from 'rxjs';
 import { DiasSemana } from '../interfaces/dias-semana';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DiasSemanaService {
-
-
-  private apiUrl = `/api/DiasSemana`;
+  private apiUrl = `${environment.apiUrl}/api/DiasSemana`;
 
   constructor(private http: HttpClient) {}
 
   getDias(): Observable<DiasSemana[]> {
     return this.http.get<DiasSemana[]>(`${this.apiUrl}/GetAllDiasSemana`);
   }
-
 }

@@ -5,14 +5,13 @@ import { IIngestaDTO } from '../interfaces/iingesta';
 import { environment } from '../../environments/environment.development';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class IngestaService {
-
-private apiUrl = `$/api/ingestas`;
+  private apiUrl = `${environment.apiUrl}/api/ingestas`;
 
   constructor(private http: HttpClient) {}
-// Obtener todas las ingestas
+  // Obtener todas las ingestas
   getAllIngestas(): Observable<IIngestaDTO[]> {
     return this.http.get<IIngestaDTO[]>(this.apiUrl);
   }

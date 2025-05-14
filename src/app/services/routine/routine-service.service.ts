@@ -7,14 +7,14 @@ import { DiasSemanaDto } from '../../interfaces/dias-semana-dto';
 import { EjercicioDto } from '../../interfaces/ejercicio-dto';  // Nueva interfaz
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RoutineServiceService {
-  private apiUrl = `$/api`;
+  private apiUrl = `${environment.apiUrl}/api`;
   private http: HttpClient = inject(HttpClient);
   private router: Router = inject(Router);
 
-  constructor() { }
+  constructor() {}
 
   private getToken(): string | null {
     return localStorage.getItem('token');
@@ -22,7 +22,9 @@ export class RoutineServiceService {
 
   private getHeaders(): HttpHeaders {
     const token = this.getToken();
-    return token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : new HttpHeaders();
+    return token
+      ? new HttpHeaders().set('Authorization', `Bearer ${token}`)
+      : new HttpHeaders();
   }
 
   // Obtener los días de la semana por usuario
@@ -39,7 +41,6 @@ export class RoutineServiceService {
     return this.http.get<EjercicioDto[]>(url, { headers: this.getHeaders() });
   }
 
-
   // ✅ Nuevo método: Obtener ejercicio por su ID
   getEjercicioById(ejercicioId: number): Observable<EjercicioDto> {
     const url = `${this.apiUrl}/Ejercicio/getEjercicioById/${ejercicioId}`;
@@ -48,7 +49,10 @@ export class RoutineServiceService {
   }
 
   // Añadir ejercicio a un día de la semana
-  addEjercicioToDiaSemana(ejercicioId: number, diaSemanaId: number): Observable<any> {
+  addEjercicioToDiaSemana(
+    ejercicioId: number,
+    diaSemanaId: number
+  ): Observable<any> {
     const url = `${this.apiUrl}/DiasSemana/AddEjercicioAtOneDayDiasSemana/${ejercicioId}/${diaSemanaId}`;
     console.log('➡️ POST:', url);
     return this.http.post(url, {}, { headers: this.getHeaders() });
@@ -58,7 +62,7 @@ export class RoutineServiceService {
   getEjerciciosByGrupoMuscularPaged(
     grupoMuscular: string,
     page: number = 0,
-    size: number = 4,
+    size: number = 4
     //sort: string = 'nombre'
   ): Observable<EjercicioDto[]> {
     const url = `${this.apiUrl}/Ejercicio/GetEjerciciosByGrupoMuscularPaged/${grupoMuscular}?page=${page}&size=${size}`;

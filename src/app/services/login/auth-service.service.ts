@@ -11,7 +11,7 @@ import { Register } from '../../interfaces/register/register';
   providedIn: 'root',
 })
 export class AuthServiceService {
-  private apiUrl = `/auth`;
+  private apiUrl = `${environment.apiUrl}/auth`;
   private http: HttpClient = inject(HttpClient);
   private router: Router = inject(Router);
 
@@ -46,7 +46,7 @@ export class AuthServiceService {
   //   return user.id || null; // Asumiendo que el objeto usuario tiene un campo 'id'
   // }
 
-    getAuthenticatedUserId(): number | null {
+  getAuthenticatedUserId(): number | null {
     const token = localStorage.getItem('authToken');
     if (token) {
       const decodedToken: any = jwt_decode(token);
@@ -87,24 +87,22 @@ export class AuthServiceService {
     return localStorage.getItem('email');
   }
 
-saveUserId(id: number) {
-  localStorage.setItem('user_id', id.toString());
-}
-
-// auth-service.service.ts
-getUserId(): number | null {
-  const token = localStorage.getItem('token');
-  if (!token) return null;
-
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.userId || payload.id || null;
-  } catch (e) {
-    return null;
+  saveUserId(id: number) {
+    localStorage.setItem('user_id', id.toString());
   }
-}
 
+  // auth-service.service.ts
+  getUserId(): number | null {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
 
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.userId || payload.id || null;
+    } catch (e) {
+      return null;
+    }
+  }
 
   logout() {
     localStorage.removeItem('token');
@@ -120,7 +118,7 @@ getUserId(): number | null {
   }
 
   register(user: Register): Observable<Register> {
-    const url = `${this.apiUrl}/signup`; // esto ya concatena con "/auth"
+    const url = `${this.apiUrl}/registerFull`; // esto ya concatena con "/auth"
     return this.http.post<Register>(url, user).pipe(
       tap(() => {
         // Solo notificar que se ha registrado (opcional, depende de si quieres login automático)
