@@ -178,20 +178,22 @@ export class ProductoService {
 
   // Método para actualizar un producto existente
   updateProducto(id: number, producto: IProducto): Observable<IProducto> {
-    console.log(`Actualizando producto con ID: ${id}`, producto);
+
 
     // Configurar los headers adecuados
-    const headers = new HttpHeaders({
+   /*  const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json',
-    });
+    }); */
 
     // Asegurarnos de que estamos enviando la solicitud al endpoint correcto
-    return this.http
-      .put<IProducto>(`${this.apiUrl}/UpdateProducto/${id}`, producto, {
-        headers,
-      })
-      .pipe(
+    return this.http.put<IProducto>(
+      `${this.apiUrl}/UpdateProducto/${id}`,
+      producto,
+      { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }
+    );
+    
+      /* .pipe(
         catchError((error) => {
           console.error(`Error al actualizar producto con ID ${id}:`, error);
 
@@ -210,11 +212,11 @@ export class ProductoService {
               )
           );
         })
-      );
+      ); */
   }
 
   // Método alternativo para actualizar usando fetch en caso de problemas CORS
-  private updateProductoWithFetch(
+  /* private updateProductoWithFetch(
     id: number,
     producto: IProducto
   ): Observable<IProducto> {
@@ -246,7 +248,7 @@ export class ProductoService {
           );
         });
     });
-  }
+  } */
 
   // Eliminar producto
   deleteProducto(id: number): Observable<any> {

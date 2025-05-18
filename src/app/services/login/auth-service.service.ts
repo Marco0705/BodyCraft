@@ -23,6 +23,10 @@ export class AuthServiceService {
 
   constructor() {}
 
+  ping(){
+    return this.http.get(this.apiUrl + '/ping', { responseType: 'text' });
+  }
+
   login(user: LoginUserDTO): Observable<string> {
     return this.http
       .post(this.apiUrl + '/login', user, { responseType: 'text' })

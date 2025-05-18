@@ -27,7 +27,19 @@ export class LoginComponent implements OnInit {
   error = signal<string | null>(null);
 
   ngOnInit(): void {
+    this.ping();
     this.loadLogin();
+  }
+
+  ping() {
+    this.authService.ping().subscribe({
+      next: (response) => {
+        console.log('Ping response:', response);
+      },
+      error: (err) => {
+        console.error('Error en ping:', err);
+      },
+    });
   }
 
   loadLogin() {
